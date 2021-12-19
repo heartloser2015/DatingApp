@@ -1,0 +1,58 @@
+﻿@page "/membership/"
+@inject HttpClient _client 
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3>Membership</h3>
+
+@if (Membership == null)
+{
+    <p><em>Loading Membership...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Last sub</th>
+                <th>Sub expires at</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Subscriptions in Membership)
+            {
+                <tr>
+                    <td>@Subscription.Id</td>
+                    <td>@Subscription.Sub_DateStart</td>
+                    <td>@Subscription.Sub_DateEnd</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick=@navigate>
+                            <span class="oi oi-credit-card"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}   
+
+
+@code {
+	private List<Subscriptions> Membership;
+
+	protected async override Task OnInitializedAsync()
+	{
+		Membership = await _client.GetFromJsonAsync<List<Match>>($"{Endpoints.MembershipEndPoint}");
+	}
+
+	async Task Delete(int makeId)
+	{
+		var make = Membership.First(q => q.Id == makeId);
+	}
+
+    void Navigate()
+    {
+        UriHelper.NavigateTo("payment")
+    }
+}
