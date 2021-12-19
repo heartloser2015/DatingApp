@@ -24,18 +24,18 @@ else
             @foreach (var Match in Matches)
             {
                 <tr>
-                    <td>@Match.User_Id</td>
+                    <td>@Match.Id</td>
                     <td>@Match.unmatch_ID</td>
                     <td>@Match.location</td>
                     <td>@Match.match_timestamp</td>
                     <td>
-                        <a href="match/view/@User_Id" class="btn btn-primary">
+                        <a href="match/view/@Match.Id" class="btn btn-primary">
                             <span class ="oi oi-book"></span>
                         </a>
-                        <a href="match/view/@User_Id" class="btn btn-warning">
+                        <a href="match/view/@Match.Id" class="btn btn-warning">
                             <span class ="oi oi-pencil"></span>
                         </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete(User_Id))">
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(Match.Id))">
                             <span class ="oi oi-delete"></span>
                         </button>
                     </td>
@@ -57,7 +57,7 @@ else
 	async Task Delete(int makeId)
 	{
 		var make = Matches.First(q => q.Id == makeId);
-		var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {make.User_Id}? ");
+		var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {make.Id}? ");
 		if(confirm)
 		{
 			await _client.DeleteAsync($"{Endpoints.MatchEndPoint}/{makeId}");

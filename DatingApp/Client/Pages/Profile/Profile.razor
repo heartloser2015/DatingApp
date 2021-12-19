@@ -5,7 +5,7 @@
 
 <h3>Profile</h3>
 
-@if (User == null)
+@if (Users == null)
 {
     <p><em>Loading User Profile...</em></p>
 }
@@ -27,22 +27,22 @@ else
             @foreach (var User in Users)
             {
                 <tr>
-                    <td>@User.Username</td>
+                    <td>@User.username</td>
                     <td>@User.email</td>
                     <td>@User.password</td>
                     <td>@User.gender</td>
                     <td>@User.Birth</td>
                     <td>@User.Status</td>
                     <td>@User.GenderP</td>
-                    <td>@User.location</td>
+                    <td>@User.Location</td>
                     <td>
-                        <a href="match/view/@User_Id" class="btn btn-primary">
+                        <a href="match/view/@User.Id" class="btn btn-primary">
                             <span class ="oi oi-book"></span>
                         </a>
-                        <a href="match/view/@User_Id" class="btn btn-warning">
+                        <a href="match/view/@User.Id" class="btn btn-warning">
                             <span class ="oi oi-pencil"></span>
                         </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete(User_Id))">
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(User.Id))">
                             <span class ="oi oi-delete"></span>
                         </button>
                     </td>
@@ -58,7 +58,7 @@ else
 
 	protected async override Task OnInitializedAsync()
 	{
-		Users = await _client.GetFromJsonAsync<List<Match>>($"{Endpoints.ProfileEndPoint}");
+		Users = await _client.GetFromJsonAsync<List<User>>($"{Endpoints.ProfileEndPoint}");
 	}
 
 	async Task Delete(int makeId)

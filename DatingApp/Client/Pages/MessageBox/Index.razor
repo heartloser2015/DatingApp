@@ -3,8 +3,8 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 
-<h3>Index</h3>
-@if (messages == null)
+<h3>Messages</h3>
+@if (Messages == null)
 {
     <p><em>Loading messages...</em></p>
 }
@@ -22,18 +22,18 @@ else
             @foreach (var Message in Messages)
             {
                 <tr>
-                    <td>@Message.User_Id</td>
+                    <td>@Message.Id</td>
                     <td>@Message.Message_content</td>
                     <td>@Message.Message_timestamp</td>
                     <td>@Message.Message_read</td>
                     <td>
-                        <a href="match/view/@User_Id" class="btn btn-primary">
+                        <a href="match/view/@Message.Id" class="btn btn-primary">
                             <span class ="oi oi-book"></span>
                         </a>
-                        <a href="match/view/@User_Id" class="btn btn-warning">
+                        <a href="match/view/@Message.Id" class="btn btn-warning">
                             <span class ="oi oi-pencil"></span>
                         </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete(User_Id))">
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(Message.Id))">
                             <span class ="oi oi-delete"></span>
                         </button>
                     </td>
@@ -55,7 +55,7 @@ else
 	async Task Delete(int makeId)
 	{
 		var make = Messages.First(q => q.Id == makeId);
-		var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {make.User_Id}? ");
+		var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {make.Id}? ");
 		if(confirm)
 		{
 			await _client.DeleteAsync($"{Endpoints.MessagesEndPoint}/{makeId}");
