@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DatingApp.Server.Data.Migrations
+namespace DatingApp.Server.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class iopt : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -83,6 +83,28 @@ namespace DatingApp.Server.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Birth = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GenderP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Like = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Superlike = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -191,6 +213,147 @@ namespace DatingApp.Server.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "BlockedUser",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BUser_Cause = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    User_IdId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlockedUser", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlockedUser_User_User_IdId",
+                        column: x => x.User_IdId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Location",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    User_IdId = table.Column<int>(type: "int", nullable: true),
+                    Location_Gps = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Location", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Location_User_User_IdId",
+                        column: x => x.User_IdId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notify",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Notify_timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Notify_box = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    User_IdId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notify", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notify_User_User_IdId",
+                        column: x => x.User_IdId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Payment_total = table.Column<int>(type: "int", nullable: false),
+                    User_IdId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payment_User_User_IdId",
+                        column: x => x.User_IdId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Match",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    User_IdId = table.Column<int>(type: "int", nullable: true),
+                    unmatch_ID = table.Column<int>(type: "int", nullable: false),
+                    locationId = table.Column<int>(type: "int", nullable: true),
+                    match_timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Match", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Match_Location_locationId",
+                        column: x => x.locationId,
+                        principalTable: "Location",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Match_User_User_IdId",
+                        column: x => x.User_IdId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Message",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Message_content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Message_timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Message_read = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Match_IdId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Message", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Message_Match_Match_IdId",
+                        column: x => x.Match_IdId,
+                        principalTable: "Match",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Location",
+                columns: new[] { "Id", "Location_Gps", "User_IdId" },
+                values: new object[] { 1, "Black", null });
+
+            migrationBuilder.InsertData(
+                table: "Location",
+                columns: new[] { "Id", "Location_Gps", "User_IdId" },
+                values: new object[] { 2, "Blue", null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -231,6 +394,11 @@ namespace DatingApp.Server.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BlockedUser_User_IdId",
+                table: "BlockedUser",
+                column: "User_IdId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
                 table: "DeviceCodes",
                 column: "DeviceCode",
@@ -240,6 +408,36 @@ namespace DatingApp.Server.Data.Migrations
                 name: "IX_DeviceCodes_Expiration",
                 table: "DeviceCodes",
                 column: "Expiration");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Location_User_IdId",
+                table: "Location",
+                column: "User_IdId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Match_locationId",
+                table: "Match",
+                column: "locationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Match_User_IdId",
+                table: "Match",
+                column: "User_IdId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_Match_IdId",
+                table: "Message",
+                column: "Match_IdId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notify_User_IdId",
+                table: "Notify",
+                column: "User_IdId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payment_User_IdId",
+                table: "Payment",
+                column: "User_IdId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_Expiration",
@@ -275,7 +473,19 @@ namespace DatingApp.Server.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "BlockedUser");
+
+            migrationBuilder.DropTable(
                 name: "DeviceCodes");
+
+            migrationBuilder.DropTable(
+                name: "Message");
+
+            migrationBuilder.DropTable(
+                name: "Notify");
+
+            migrationBuilder.DropTable(
+                name: "Payment");
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");
@@ -285,6 +495,15 @@ namespace DatingApp.Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Match");
+
+            migrationBuilder.DropTable(
+                name: "Location");
+
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }

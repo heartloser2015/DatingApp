@@ -1,4 +1,6 @@
-﻿using DatingApp.Server.Models;
+﻿using DatingApp.Server.Areas.configuration.entity;
+using DatingApp.Server.Models;
+using DatingApp.Shared.Domin;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,23 @@ namespace DatingApp.Server.Data
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
+        }
+        public DbSet<User> User { get; set; }
+        public DbSet<Location> Location { get; set; }
+        public DbSet<Match> Match { get; set; }
+        public DbSet<Message> Message { get; set; }
+        public DbSet<Notify> Notify { get; set; }
+        public DbSet<Payment> Payment { get; set; }
+        public DbSet<Payment> Subscription { get; set; }
+
+        public DbSet<BlockedUser> BlockedUser { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.ApplyConfiguration(new LocationSeedConfiguration());
+           
+            
         }
     }
 }
